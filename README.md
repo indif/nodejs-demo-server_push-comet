@@ -6,6 +6,7 @@
 
 服务端基于Node.js实现。
 
-客户端使用EventSource实现长连接的事件监听，并提供一个EventSource的polyfill。
+客户端使用EventSource实现长连接的事件监听，并提供一个EventSource的[polyfill](https://github.com/indif/nodejs-demo-server_push-comet/blob/master/polyfill.js)。
+其他实现还有[Remy Sharp's EventSource polyfill](https://github.com/remy/polyfills/blob/master/EventSource.js)、[Yaffle’s EventSource polyfill](https://github.com/Yaffle/EventSource)和[Rick Waldron’s jquery plugin](https://github.com/rwldrn/jquery.eventsource)。
 
 关于服务器推送技术，参考[Mozilla的技术文档](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)。
