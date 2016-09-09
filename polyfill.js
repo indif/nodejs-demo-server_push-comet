@@ -64,6 +64,9 @@ if (window.EventSource === undefined) {     // If EventSource is not defined,
             var chunk = xhr.responseText.substring(charsReceived);
             charsReceived = xhr.responseText.length;
 
+            // 设置缺省事件类型
+            eventName = 'message';
+
             // Break the chunk of text into lines and iterate over them.
             var lines = chunk.replace(/(\r\n|\r|\n)$/, "").split(/\r\n|\r|\n/);
             for(var i = 0; i < lines.length; i++) {

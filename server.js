@@ -5,19 +5,37 @@ var fs = require( 'fs' );
 
 var polyfill = fs.readFileSync( 'polyfill.js' );
 var clientjs = fs.readFileSync( 'client.js' );
+var clientpage = [
+					'<!DOCKTYPE html>',
+					'<html>',
+					'<head>',
+					'<title>comet-demo</title>',
+					'<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">',
+					'<script>',
+					polyfill,
+					'</script>',
+					'<script>',
+					clientjs,
+					'</script>',
+					'</head>',
+					'<body>',
+					'<input id="input" style="width:100%"/>',
+					'</body>',
+					'</html>'
+				].join( '\n' );
 
 var clients = [];
 
-http.createServer( onRequest ).listen( 3000 );
+var server = http.createServer( onRequest );
+server.listen( 3000 );
 console.log( 'Server listenning at 3000' );
 
-// 每20秒向客户端发送一个ping，放置客户端不断超时重连
-// TODO：消息类型与监听事件需要搞明白
+// 每20秒向客户端发送一个消息，防止客户端超时重连
 setInterval( function() {
 
 	clients.forEach( function( client ) {
 
-		client.write( ':ping\n' );
+		client.write( ': ping\n\n' );
 
 	} );
 
@@ -30,16 +48,8 @@ function onRequest( request, response ) {
 	if ( pathname === '/' ) {
 
 		response.writeHead( 200, {'Content-Type': 'text/html'} );
-		response.write( '<!DOCKTYPE html>' );
-		response.write( '<html><head><title>comet-demo</title>');
-		response.write( '<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">' );
-		response.write( '<script>' + polyfill + '</script>' );
-		response.write( '<script>' + clientjs + '</script>' );
-		response.write( '</head>' );
-		response.write( '<body><input id="input" style="width:100%"/></body></html>' );
+		response.write( clientpage );
 		response.end();
-
-		return;
 
 	}
 
@@ -60,9 +70,10 @@ function onRequest( request, response ) {
 				response.writeHead( 200 );
 				response.end();
 
-				// data:是message事件的标识
-				// /n/n强制立即发送？
-				message = 'data: ' + chunks.join( '' ) + '\n\n';
+				// 没有指定“event:”的事件为默认的“message”类型
+				// 确保每一行的前缀都是“data:”
+				// 并以两个换行符结束
+				message = 'data:' + chunks.join( '' ).replace('\ndata:') + '\n\n';
 
 				clients.forEach( function( client ) { client.write( message ); } );
 
@@ -72,7 +83,9 @@ function onRequest( request, response ) {
 		else if ( request.method === 'GET' ) {
 
 			response.writeHead( 200, {'Content-Type': 'text/event-stream'} );
-			response.write( 'data: Connected\n\n' );
+
+			// 连接成功，发送一个“connected”类型事件
+			response.write( 'event:connected\ndata:Wellcome!\n\n' );
 
 			request.connection.on( 'end', function() {
 

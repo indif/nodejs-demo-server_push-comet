@@ -16,9 +16,16 @@ window.onload = function() {
 		document.body.insertBefore( div, input );
 
 	};
-	chat.addEventListener( 'ping', function( event ) {
 
-		console.log( event.data );
+	// 捕获其他类型的事件
+	// 注意：如果服务端发送的消息没有data:，则这里捕获不到事件
+	chat.addEventListener( 'connected', function( event ) {
+
+		var msg = event.data;
+		var node = document.createTextNode( msg );
+		var div = document.createElement( 'div' );
+		div.appendChild( node );
+		document.body.insertBefore( div, input );
 
 	} );
 
