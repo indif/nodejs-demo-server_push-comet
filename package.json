@@ -1,0 +1,23 @@
+{
+  "name": "comet-demo",
+  "version": "1.0.0",
+  "description": "基于长链接实现的服务器推送示例程序，服务端使用nodejs实现",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/indif/comet-demo.git"
+  },
+  "keywords": [
+    "EventSource",
+    "comet"
+  ],
+  "author": "indif",
+  "license": "none",
+  "bugs": {
+    "url": "https://github.com/indif/comet-demo/issues"
+  },
+  "homepage": "https://github.com/indif/comet-demo#readme"
+}
